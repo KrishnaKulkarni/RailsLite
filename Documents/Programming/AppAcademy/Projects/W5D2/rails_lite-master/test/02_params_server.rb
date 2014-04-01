@@ -1,4 +1,5 @@
-require 'active_support/core_ext'
+#require 'active_support/core_text'
+require 'active_support/inflector'
 require 'json'
 require 'webrick'
 require 'rails_lite'
@@ -13,6 +14,7 @@ trap('INT') { server.shutdown }
 class ExampleController < ControllerBase
   def create
     render_content(params.to_s, "text/json")
+    #render_content(req.query_string, "text/json")
   end
 
   def new
@@ -24,10 +26,13 @@ class ExampleController < ControllerBase
   <input type="submit">
 </form>
 END
-
+    #render_content("hello", "text/hello")
     render_content(page, "text/html")
   end
 end
+
+
+
 
 server.mount_proc '/' do |req, res|
   case req.path

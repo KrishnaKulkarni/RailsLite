@@ -21,6 +21,7 @@ describe Params do
     it "handles single key and value" do
       req.query_string = "key=val"
       params = Params.new(req)
+      #p params.params
       params["key"].should == "val"
     end
 

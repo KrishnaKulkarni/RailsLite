@@ -2,10 +2,13 @@ class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
 
   def initialize(pattern, http_method, controller_class, action_name)
+    @pattern, @http_method, @controller_class, @action_name = pattern, http_method, controller_class, action_name
   end
 
   # checks if pattern matches path and method matches request method
   def matches?(req)
+    return false unless self.http_method == req.request_method.downcase.to_sym
+    self.pattern == req.path
   end
 
   # use pattern to pull out route params (save for later?)
@@ -18,10 +21,12 @@ class Router
   attr_reader :routes
 
   def initialize
+    @routes = []
   end
 
   # simply adds a new route to the list of routes
   def add_route(pattern, method, controller_class, action_name)
+    self.routes << Route.new(pattern, http_method, controller_class, action_name)
   end
 
   # evaluate the proc in the context of the instance
