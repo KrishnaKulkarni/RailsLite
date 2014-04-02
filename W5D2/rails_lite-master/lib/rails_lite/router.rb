@@ -14,7 +14,6 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
-   ### raise "cannot run non_matching request" unless matches?(req) ##
     @route_params = {}
     match_data = self.pattern.match(req.path)
     match_data.names.each do |name|

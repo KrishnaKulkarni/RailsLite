@@ -1,0 +1,2 @@
+1) clean up comments
+2) reimplement parsing of query string to nested hash; use method that is purely iterative (no recursive helper)

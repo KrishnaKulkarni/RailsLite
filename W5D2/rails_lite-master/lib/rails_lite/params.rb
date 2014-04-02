@@ -54,15 +54,14 @@ class Params
 
   def parse_www_encoded_form(www_encoded_form)
     return {} if www_encoded_form.nil?
-
     raw_arrays = URI.decode_www_form(www_encoded_form).map { |pair| parse_key(pair.first) + [pair.last] }
-    params = {}
 
+    params = {}
     raw_arrays.each do |arr|
       curr_hash = params
       arr.each_with_index do |elem, idx|
 
-        if(idx == arr.length - 2)
+        if idx == arr.length - 2
           curr_hash[elem] = arr.last
           break
         end
@@ -70,22 +69,14 @@ class Params
         if curr_hash.has_key?(elem)
           curr_hash = curr_hash[elem]
         else
-          curr_hash.merge!(build_nest_hash(arr[idx...arr.length]))
-          break
+          curr_hash[elem] = {}
+          curr_hash = curr_hash[elem]
         end
+
       end
     end
 
     params
-  end
-
-
-#['user', 'address', 'street', 'main'] => {  }
-  def build_nest_hash(arr)
-    raise "A hash must have at least 2 inputs: key and value" unless arr.length >= 2
-    return { arr.first => arr.last } if arr.length == 2
-
-    build_nest_hash(arr[0...arr.length - 2] + [{ arr[-2] => arr[-1] }])
   end
 
   # this should return an array
@@ -93,4 +84,5 @@ class Params
   def parse_key(key)
     key.gsub("]", "").split("[")
   end
+
 end
