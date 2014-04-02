@@ -13,7 +13,7 @@ class ControllerBase
     @req = req
     @res = res
     @params = Params.new(req, route_params)
-    
+
   end
 
   # populate the response with content
@@ -21,13 +21,13 @@ class ControllerBase
   # later raise an error if the developer tries to double render
   def render_content(content, type)
     #response = HTTPResponse.new(content_type: type, body: content)
-    self.res.body, self.res.content_type = content, type 
+    self.res.body, self.res.content_type = content, type
     session.store_session(self.res)
-    
+
     if already_rendered?
       raise "Can't render/redirect twice"
     end
-    
+
     #following might be wrong b/c of no setter
     @already_built_response = true
     nil
@@ -45,12 +45,12 @@ class ControllerBase
     #how would I know about location
     self.res.header["location"] = url
     session.store_session(self.res)
-    
+
     #self.res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect, url)
     if already_rendered?
       raise "Can't render/redirect twice"
     end
-    
+
     #following might be wrong b/c of no setter
     @already_built_response = true
     nil
@@ -61,10 +61,10 @@ class ControllerBase
   def render(template_name)
     #Open template, put content into string-content
     cntrl_name = self.class.to_s.underscore
-    
+
     erb_temp = File.read("views/#{cntrl_name}/#{template_name}.html.erb")
     content = ERB.new(erb_temp).result(binding)
-    
+
     render_content(content , 'text/html')
   end
 
@@ -75,6 +75,8 @@ class ControllerBase
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
-    
+    self.send(name)
+    #Rails Magic: Default calls render on appropriate method even if the programmer doesn't :
+    render(name) unless already_rendered?
   end
 end
